@@ -9,7 +9,7 @@
 	std::string message_description =
 		"Renommage multiple selon un certain modèle";
 
-	std::string message_version = "version 2024-12-24";
+	std::string message_version = "version 2025-03-01";
 
 	std::string message_aide = // option --help
 		message_usage+"\n""\n"+message_description+"\n""\n"

@@ -8,8 +8,16 @@
 #include <cctype>	// std::tolower
 #include "argparse.hpp"	// Parse la ligne de commande
 
+/*
+	Apple se servait, avec son système de fichier HFS+ du standard NFD
+	pour l'encodage des fichiers sur ce filesystem. Depuis 2017, Apple
+	sort APFS. Nouveau filesystem qui peut encoder ses noms de fichiers
+	aussi bien en NFD qu'en NFC, standard utilisé sur Linux.
+*/
+
 #ifdef __APPLE__
-	#include "minNFC2NFD.hpp"
+	#include "my_lib/NFC2NFD.hpp"
+	std::string ptrn_NFD;
 #endif
 
 #include "my_lib/global.h"
@@ -17,17 +25,13 @@
 #include "my_lib/dos.hpp"
 #include "my_lib/trouveMatch.hpp"
 
-// Pour compiler: g++ -std=c++11 mren.cpp -o mren
+// Pour compiler: g++ -std=c++11 -o mren main.cpp my_lib/*.cpp -liconv
 
 struct flags fl;
 std::string ptrn;
 std::string repl;
 
 std::regex_constants::syntax_option_type regexOptionI = std::regex_constants::ECMAScript;
-
-#ifdef __APPLE__
-	std::string ptrn_NFD;
-#endif
 
 int main(int argc, char *argv[])
 {
@@ -71,7 +75,7 @@ int main(int argc, char *argv[])
 	ptrn_NFD = ptrn;
 	if (! isPlainText(ptrn))
 	{
-		ptrn_NFD = minNFC2NFD(ptrn);
+		ptrn_NFD = NFC2NFD(ptrn);
 	}
 #endif
 	repl = arg.argPos_v[1];

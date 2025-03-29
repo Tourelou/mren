@@ -11,6 +11,6 @@ file(GLOB_RECURSE lib_source my_lib/*.cpp)
 add_library(_modules_maison STATIC ${lib_source})
 
 add_executable(${PROJECT_NAME} main.cpp)
-target_link_libraries(${PROJECT_NAME} _modules_maison)
+target_link_libraries(${PROJECT_NAME} _modules_maison iconv)
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "~/bin/")
