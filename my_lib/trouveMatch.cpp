@@ -126,16 +126,22 @@ bool trouveMatch()
 					}
 					chdir(prevPath.c_str());
 				}
-				else { std::cout << coul.FGROUGE <<"---" << coul.RESET << " Je ne peux "
-								<< coul.FGROUGE << "«chdir()»" << coul.RESET << " vers le répertoire "
-								<< coul.FGROUGE << d << " ---" << coul.RESET << std::endl; }
+				else {
+					if (langFranc) std::cout << coul.FGROUGE <<"---" << coul.RESET << " Je ne peux "
+									<< coul.FGROUGE << "«chdir()»" << coul.RESET << " vers le répertoire "
+									<< coul.FGROUGE << d << " ---" << coul.RESET << std::endl;
+					else std::cout << coul.FGROUGE <<"---" << coul.RESET << " Can't "
+									<< coul.FGROUGE << "«chdir()»" << coul.RESET << " to folder "
+									<< coul.FGROUGE << d << " ---" << coul.RESET << std::endl;
+				}
 				match = match|recursive_match;
 				iteration--;
 			}
 		}
 	}
 	else {
-		std::cout << "Ne peut lire le répertoire " << get_working_path() << std::endl;
+		if (langFranc) std::cout << "Ne peut lire le répertoire " << get_working_path() << std::endl;
+		else std::cout << "Can't read directory " << get_working_path() << std::endl;
 		return false;
 	}
 	return match|recursive_match;

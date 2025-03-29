@@ -6,12 +6,12 @@
 
 	struct couleurTerm
 	{
-		std::string FGROUGE = "\033[91m";
-		std::string FGVERT = "\033[92m";
-		std::string FGJAUNE = "\033[93m";
+		std::string FGROUGE = "\033[91m\033[40m";
+		std::string FGVERT = "\033[92m\033[40m";
+		std::string FGJAUNE = "\033[93m\033[40m";
 		std::string FGBLEU = "\033[94m";
-		std::string FGMAGENTA = "\033[95m";
-		std::string FGCYAN = "\033[96m";
+		std::string FGMAGENTA = "\033[95m\033[40m";
+		std::string FGCYAN = "\033[96m\033[40m";
 		std::string RESET = "\033[0m";
 		std::string GRAS = "\033[1m";
 		std::string ITALIQUE = "\033[3m";
@@ -33,6 +33,7 @@
 
 	extern struct flags fl;		// Une variable globale modifiable
 	extern int iteration;
+	extern bool langFranc;
 
 	extern std::regex_constants::syntax_option_type regexOptionI;
 	extern std::string ptrn;

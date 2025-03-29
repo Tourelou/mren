@@ -21,12 +21,14 @@
 #endif
 
 #include "my_lib/global.h"
+#include "my_lib/getFrancais.hpp"
 #include "my_lib/help-erreur.hpp"
 #include "my_lib/dos.hpp"
 #include "my_lib/trouveMatch.hpp"
 
 // Pour compiler: g++ -std=c++11 -o mren main.cpp my_lib/*.cpp -liconv
 
+bool langFranc = false;
 struct flags fl;
 std::string ptrn;
 std::string repl;
@@ -40,10 +42,23 @@ int main(int argc, char *argv[])
 
 	if ( getcwd(basePath, PATH_MAX) == 0) exit(1); // Si tu peux pas connaître ton cwd: ça va mal
 
-	// Set les éléments pour parser avec argparse.hpp
-	argparse arg({.version = message_version, .description = message_description, 
-									.usage = message_usage, .helpMsg = message_aide});
+	langFranc = getFrancais();
+	setRenommeLocale();
 
+	// Set les éléments pour parser avec argparse.hpp
+	argparse arg({.version = message_version});
+
+	if (langFranc) {
+		arg.Base.description = fr_message_description;
+		arg.Base.usage = fr_message_usage;
+		arg.Base.helpMsg = fr_message_aide;
+	}
+	else {
+		arg.Base.description = en_message_description;
+		arg.Base.usage = en_message_usage;
+		arg.Base.helpMsg = en_message_aide;
+	}
+	
 	if (! arg.addOption({.varPtr = &fl.f_flag, .shortOption = "-f", .varType = def::BOOL})) return 1;
 	if (! arg.addOption({.varPtr = &fl.d_flag, .shortOption = "-d", .varType = def::BOOL})) return 1;
 	if (! arg.addOption({.varPtr = &fl.r_flag, .shortOption = "-r", .longOption = "--recursive", .varType = def::BOOL})) return 1;
@@ -56,12 +71,20 @@ int main(int argc, char *argv[])
 	if (ret == retcode::ERROR) return 1;
 	if (ret == retcode::HELP_VERSION) return 0;
 
-	if (arg.argPos_c < 2) { prt_message(message_erreur); return 1; }
+	if (arg.argPos_c < 2) {
+
+		if (langFranc) prt_message(fr_message_erreur);
+		else prt_message(en_message_erreur);
+
+		return 1;
+	}
 
 	// On ajuste les flags f_flag et d_flag pour être cohérent
 	if ((fl.f_flag == false) && (fl.d_flag == false)) fl.f_flag = fl.d_flag = true;
 	else if ((fl.f_flag == true) && (fl.d_flag == true)) {
-		prt_message(message_exclude);
+		if (langFranc) prt_message(fr_message_exclude);
+		else prt_message(en_message_exclude);
+
 		return 1;
 	}
 
@@ -88,8 +111,14 @@ int main(int argc, char *argv[])
 		struct stat sb; // Teste pour un répertoire valide
 		if (!(stat(arg.argPos_v[i].c_str(), &sb) == 0 && (sb.st_mode & S_IFDIR))) {
 			std::cout << "✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦" << std::endl;
-			std::cout << coul.FGROUGE << arg.argPos_v[i] << coul.RESET 
+			if (langFranc) {
+				std::cout << coul.FGROUGE << arg.argPos_v[i] << coul.RESET 
 						<< " n'est pas un répertoire valide." << std::endl;
+			}
+			else {
+				std::cout << coul.FGROUGE << arg.argPos_v[i] << coul.RESET 
+						<< " is not a valid folder." << std::endl;
+			}
 			continue;
 		}
 		// À partir d'ici nous avons un répertoire valide.
@@ -99,9 +128,16 @@ int main(int argc, char *argv[])
 
 		if (fl.v_flag) {
 			if (i > 2) std::cout << "✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦" << std::endl;
-			std::cout << "À partir du répertoire: "
+			if (langFranc) {
+				std::cout << "À partir du répertoire: "
 						<< coul.FGBLEU << currObject << coul.RESET << "\n"
 						<< "- - - - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+			}
+			else {
+				std::cout << "From folder: "
+						<< coul.FGBLEU << currObject << coul.RESET << "\n"
+						<< "- - - - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
+			}
 		}
 		if (fl.i_flag && fl.d_flag) { // Si on a le flag -i, inclure le rep source.
 			std::string baseName = currObject.substr(currObject.find_last_of("/\\") + 1);
@@ -138,12 +174,21 @@ int main(int argc, char *argv[])
 
 		}
 		if ( ! chdir(currObject.c_str()) ) {
-			if (! trouveMatch()) std::cout << "Pas de correspondance pour ce répertoire ..." << std::endl;
+			if (! trouveMatch()) {
+				if (langFranc) std::cout << "Pas de correspondance pour ce répertoire ..." << std::endl;
+				else std::cout << "There is no match for this directory ..." << std::endl;
+			}
 			chdir(basePath); // À cause de la boucle, toujours revenir au dossier de base
 		}
 		else {
-			std::cout << "Impossible de travailler avec le répertoire "
+			if (langFranc) {
+				std::cout << "Impossible de travailler avec le répertoire "
 					  << coul.FGROUGE << arg.argPos_v[i] << coul.RESET << std::endl;
+			}
+			else {
+				std::cout << "Unable to work with directory "
+					  << coul.FGROUGE << arg.argPos_v[i] << coul.RESET << std::endl;
+			}
 			continue;
 		}
 	}
