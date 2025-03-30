@@ -1,5 +1,6 @@
 # mren - Mutilple files/directories renaming using pattern
 
+```bash
 usage: mren [-f|-d] [-riInv] <regex pattern> <remplacement> [dirname ...]
 
 Multiple renaming from a pattern
@@ -19,3 +20,4 @@ Options:
   -v, --verbose     Gives details of the processed file(s) - Affected files in RED
   -ver, --version   Multiple renaming from a pattern
   -h, --help        Show this help message and exit
+```
