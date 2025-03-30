@@ -6,6 +6,8 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED YES)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+include_directories(${CMAKE_SOURCE_DIR}/includes)
+
 # Pour intégrer des modules maison
 file(GLOB_RECURSE lib_source my_lib/*.cpp)
 add_library(_modules_maison STATIC ${lib_source})
@@ -22,17 +24,21 @@ if(APPLE)
         message(STATUS "Librairie iconv trouvée: ${ICONV_LIBRARIES}")
         # Ajoutez ici votre logique pour inclure la bibliothèque iconv
         target_link_libraries(${PROJECT_NAME} _modules_maison ${ICONV_LIBRARIES})
+
     else()
         message(WARNING "Librairie iconv introuvable sur macOS")
+
     endif()
+
 elseif(UNIX)
     # Si nous sommes sur Linux, ne faites rien ou ajoutez d'autres options si nécessaires
-    message(STATUS "Compilation sur Linux - Pas de librairie iconv")
+    message(STATUS "Compilation sur Linux - Pas besoin de librairie iconv")
     target_link_libraries(${PROJECT_NAME} _modules_maison)
     else()
     # Pour d'autres systèmes d'exploitation, vous pouvez ajouter d'autres logiques si nécessaire
-    message(STATUS "Compiling sur un système inconnu - Pas de librairie iconv")
+    message(STATUS "Compiling sur un système inconnu - Pas besoin de librairie iconv")
     target_link_libraries(${PROJECT_NAME} _modules_maison)
+
 endif()
 
 install(TARGETS ${PROJECT_NAME} DESTINATION "~/bin/")
