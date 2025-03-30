@@ -1,4 +1,4 @@
-# mren - Mutilple files/directories renaming using pattern
+## mren - Mutilple files/directories renaming using pattern
 
 ```bash
 usage: mren [-f|-d] [-riInv] <regex pattern> <remplacement> [dirname ...]
