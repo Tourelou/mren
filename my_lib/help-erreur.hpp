@@ -3,8 +3,6 @@
 
 	#include "global.h"		// Pour récupérer la définition de la variable coul
 
-	std::string message_version = "version 2025-03-24";
-
 	std::string fr_message_usage = // option -h
 		"usage: mren [-f|-d] [-riInv] <motif regex> <remplacement> [dirname ...]";
 

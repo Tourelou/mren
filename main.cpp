@@ -6,7 +6,6 @@
 #include <dirent.h>	// Pour récupérer le contenu d'un répertoire
 #include <sys/stat.h>	// Récupère les info d'un fichier/dir
 #include <cctype>	// std::tolower
-#include "argparse.hpp"	// Parse la ligne de commande
 
 /*
 	Apple se servait, avec son système de fichier HFS+ du standard NFD
@@ -21,6 +20,7 @@
 #endif
 
 #include "my_lib/global.h"
+#include "my_lib/argparse_mren.hpp"
 #include "my_lib/getFrancais.hpp"
 #include "my_lib/help-erreur.hpp"
 #include "my_lib/dos.hpp"
@@ -46,28 +46,20 @@ int main(int argc, char *argv[])
 	setRenommeLocale();
 
 	// Set les éléments pour parser avec argparse.hpp
-	argparse arg({.version = message_version});
+	argparseBase arg({.version = "version 2025-04-16"});
 
 	if (langFranc) {
-		arg.Base.description = fr_message_description;
-		arg.Base.usage = fr_message_usage;
-		arg.Base.helpMsg = fr_message_aide;
+		arg.description = fr_message_description;
+		arg.usage = fr_message_usage;
+		arg.helpMsg = fr_message_aide;
 	}
 	else {
-		arg.Base.description = en_message_description;
-		arg.Base.usage = en_message_usage;
-		arg.Base.helpMsg = en_message_aide;
+		arg.description = en_message_description;
+		arg.usage = en_message_usage;
+		arg.helpMsg = en_message_aide;
 	}
-	
-	if (! arg.addOption({.varPtr = &fl.f_flag, .shortOption = "-f", .varType = def::BOOL})) return 1;
-	if (! arg.addOption({.varPtr = &fl.d_flag, .shortOption = "-d", .varType = def::BOOL})) return 1;
-	if (! arg.addOption({.varPtr = &fl.r_flag, .shortOption = "-r", .longOption = "--recursive", .varType = def::BOOL})) return 1;
-	if (! arg.addOption({.varPtr = &fl.i_flag, .shortOption = "-i", .longOption = "--include", .varType = def::BOOL})) return 1;
-	if (! arg.addOption({.varPtr = &fl.I_flag, .shortOption = "-I", .longOption = "--ignoreCase", .varType = def::BOOL})) return 1;
-	if (! arg.addOption({.varPtr = &fl.n_flag, .shortOption = "-n", .longOption = "--simulate", .varType = def::BOOL})) return 1;
-	if (! arg.addOption({.varPtr = &fl.v_flag, .shortOption = "-v", .longOption = "--verbose", .varType = def::BOOL})) return 1;
-
-	int ret = arg.parse(argc, argv);
+	arg.mren_flags = &fl;
+	int ret = parse(arg, argc, argv);
 	if (ret == retcode::ERROR) return 1;
 	if (ret == retcode::HELP_VERSION) return 0;
 
