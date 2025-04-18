@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 	setRenommeLocale();
 
 	// Set les éléments pour parser avec argparse.hpp
-	argparseBase arg({.version = "version 2025-04-16"});
+	argparseBase arg({.version = "version 2025-04-18"});
 
 	if (langFranc) {
 		arg.description = fr_message_description;

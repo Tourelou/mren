@@ -9,22 +9,22 @@
 	std::string fr_message_description = "Renommage multiple selon un certain motif";
 
 	std::string fr_message_aide = // option --help
-		fr_message_usage+"\n""\n"+fr_message_description+"\n""\n"
+		fr_message_usage+"\n""\n"+fr_message_description+".\n""\n"
 		"Arguments en position:\n"
 		"  <motif regex>     Motif à chercher: Mettre entre guillements '...'\n"
-		"  <remplacement>    Chaîne de remplacement\n"
-		"  [dirname ...]     Répertoire(s) de recherche\n"
+		"  <remplacement>    Chaîne de remplacement. Doit obligatoirement suivre le motif.\n"
+		"  [dirname ...]     Répertoire(s) de recherche.\n"
 		"\n"
 		"Options:\n"
-		"  -f                N'agit que sur les fichiers\n"
-		"  -d                N'agit que sur les répertoires\n"
-		"  -r, --recursive   Procède de façon récursive sur les répertoires\n"
-		"  -i, --include     En mode récusif, inclu le dossier en ligne de commande\n"
-		"  -I, --ignoreCase  Fait une recherche en ignorant la case\n"
-		"  -n, --simulate    Simule les opérations demandées - Fichiers affectés en VERT\n"
-		"  -v, --verbose     Donne des détails sur le(s) fichier(s) traité(s) - Fichiers affectés en ROUGE\n"
-		"  -ver, --version   Renommage multiple à partir d'un motif\n"
-		"  -h, --help        Montre ce message d'aide et termine";
+		"  -f                N'agit que sur les fichiers.\n"
+		"  -d                N'agit que sur les répertoires.\n"
+		"  -r, --recursive   Procède de façon récursive sur les répertoires.\n"
+		"  -i, --include     En mode récusif, inclu le dossier en ligne de commande.\n"
+		"  -I, --ignoreCase  Fait une recherche en ignorant la case.\n"
+		"  -n, --simulate    Simule les opérations demandées - Fichiers affectés en VERT.\n"
+		"  -v, --verbose     Donne des détails sur le(s) fichier(s) traité(s) - Fichiers affectés en ROUGE.\n"
+		"  -ver, --version   Renommage multiple à partir d'un motif.\n"
+		"  -h, --help        Montre ce message d'aide et termine.";
 
 	std::string fr_message_exclude =
 		"Pour les drapeaux «f|d», il sont mutuellement exclusif. C'est un ou c'est l'autre.";
@@ -45,22 +45,22 @@ std::string en_message_usage = // option -h
 std::string en_message_description = "Multiple renaming from a pattern";
 
 std::string en_message_aide = // option --help
-en_message_usage+"\n""\n"+en_message_description+"\n""\n"
+en_message_usage+"\n""\n"+en_message_description+".\n""\n"
 "Positional arguments:\n"
 "  <regex pattern>   Pattern to serch: Put into single quote '...'\n"
-"  <remplacement>    Replacement for the found pattern\n"
-"  [dirname ...]     Path(s) to search\n"
+"  <remplacement>    Replacement string. Must follow the pattern.\n"
+"  [dirname ...]     Path(s) to search.\n"
 "\n"
 "Options:\n"
-"  -f                Search only for files\n"
-"  -d                Search only for folders\n"
-"  -r, --recursive   Recursively works through directories\n"
-"  -i, --include     In recursive mode, include the folder pass on the command line\n"
-"  -I, --ignoreCase  Self explained\n"
-"  -n, --simulate    Simulates the requested operations - Files affected in GREEN\n"
-"  -v, --verbose     Gives details of the processed file(s) - Affected files in RED\n"
-"  -ver, --version   Multiple renaming from a pattern\n"
-"  -h, --help        Show this help message and exit";
+"  -f                Search only for files.\n"
+"  -d                Search only for folders.\n"
+"  -r, --recursive   Recursively works through directories.\n"
+"  -i, --include     In recursive mode, include the folder pass on the command line.\n"
+"  -I, --ignoreCase  Self explained.\n"
+"  -n, --simulate    Simulates the requested operations - Files affected in GREEN.\n"
+"  -v, --verbose     Gives details of the processed file(s) - Affected files in RED.\n"
+"  -ver, --version   Multiple renaming from a pattern.\n"
+"  -h, --help        Show this help message and exit.";
 
 std::string en_message_exclude =
 "For the «f|d» flags, they are mutually exclusive. It's one or the other.";

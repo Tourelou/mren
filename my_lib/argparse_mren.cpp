@@ -1,6 +1,16 @@
 #include "argparse_mren.hpp"
 
+std::vector<const char *> longOptions = {"--recursive", "--include", "--ignoreCase", "--simulate", "--verbose"};
+std::vector<const char> shortOptions = {'f', 'd', 'r', 'i', 'I', 'n', 'v'};
+
 int parse(struct argparseBase &Base, int argc, char* argv[]) { // return 0 = OK, 1 = help-version, 2+ erreur
+
+	std::vector<bool *> optionFlags = {	&Base.mren_flags->f_flag, &Base.mren_flags->d_flag,
+										&Base.mren_flags->r_flag, &Base.mren_flags->i_flag,
+										&Base.mren_flags->I_flag, &Base.mren_flags->n_flag,
+										&Base.mren_flags->v_flag
+									};
+
 	if (Base.progName == "") {
 		std::string s = argv[0];
 		Base.progName = s.substr(s.find_last_of("/\\") + 1);
@@ -44,52 +54,34 @@ int parse(struct argparseBase &Base, int argc, char* argv[]) { // return 0 = OK,
 
 		if (argv[i][0] == '-') {
 			if (argv[i][1] == '-') {	// Argument long: --argument
-				if (strcmp(argv[i], "--recursive") == 0) Base.mren_flags->r_flag = true;
-				else if (strcmp(argv[i], "--include") == 0) Base.mren_flags->i_flag = true;
-				else if (strcmp(argv[i], "--ignoreCase") == 0) Base.mren_flags->I_flag = true;
-				else if (strcmp(argv[i], "--simulate") == 0) Base.mren_flags->n_flag = true;
-				else if (strcmp(argv[i], "--verbose") == 0) Base.mren_flags->v_flag = true;
-				else {
+
+				bool found = false;
+				for (size_t j = 0; j < longOptions.size(); j++) {
+					if (strcmp(argv[i], longOptions[j]) == 0) {
+						found = true;
+						*optionFlags[ j + 2 ] = true;
+						break;
+					}
+				}
+				if ( ! found ) {
 					std::cout << "illégal option " << argv[i] << std::endl;
 					return ERROR;
 				}
 			}
 			else {						// Argument court: -a
+				bool found = false;
 				std::string option = argv[i];
 				for (int c = 1; c < option.length(); c++) {
-					switch (option[c]) {
-					case 'f':
-						Base.mren_flags->f_flag = true;
-						break;
-					
-					case 'd':
-						Base.mren_flags->d_flag = true;
-						break;
-					
-					case 'r':
-						Base.mren_flags->r_flag = true;
-						break;
-					
-					case 'i':
-						Base.mren_flags->i_flag = true;
-						break;
-					
-					case 'I':
-						Base.mren_flags->I_flag = true;
-						break;
-					
-					case 'n':
-						Base.mren_flags->n_flag = true;
-						break;
-					
-					case 'v':
-						Base.mren_flags->v_flag = true;
-						break;
-					
-					default:
+					for (size_t j = 0; j < shortOptions.size(); j++) {
+						if (argv[i][c] == shortOptions[j]) {
+							found = true;
+							*optionFlags[j] = true;
+							break;
+						}
+					}
+					if ( ! found ) {
 						std::cout << "illégal option -" << argv[i][c] << std::endl;
 						return ERROR;
-						break;
 					}
 				}
 			}
@@ -103,7 +95,6 @@ int parse(struct argparseBase &Base, int argc, char* argv[]) { // return 0 = OK,
 					Base.argPos_v.push_back(argv[i]);
 					Base.argPos_c++;
 				}
-				else return ERROR;
 			}
 		}
 	}
