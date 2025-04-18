@@ -1,7 +1,7 @@
 #include "argparse_mren.hpp"
 
 std::vector<const char *> longOptions = {"--recursive", "--include", "--ignoreCase", "--simulate", "--verbose"};
-std::vector<const char> shortOptions = {'f', 'd', 'r', 'i', 'I', 'n', 'v'};
+std::vector<char> shortOptions = {'f', 'd', 'r', 'i', 'I', 'n', 'v'};
 
 int parse(struct argparseBase &Base, int argc, char* argv[]) { // return 0 = OK, 1 = help-version, 2+ erreur
 
