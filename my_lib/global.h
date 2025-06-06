@@ -33,7 +33,6 @@
 
 	extern struct flags fl;		// Une variable globale modifiable
 	extern int iteration;
-	extern bool langFranc;
 
 	extern std::regex_constants::syntax_option_type regexOptionI;
 	extern std::string ptrn;

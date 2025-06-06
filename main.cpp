@@ -21,14 +21,12 @@
 
 #include "my_lib/global.h"
 #include "my_lib/argparse_mren.hpp"
-#include "my_lib/getFrancais.hpp"
-#include "my_lib/help-erreur.hpp"
+#include "my_lib/mren_locale.hpp"
 #include "my_lib/dos.hpp"
 #include "my_lib/trouveMatch.hpp"
 
 // Pour compiler: g++ -std=c++11 -o mren main.cpp my_lib/*.cpp -liconv
 
-bool langFranc = false;
 struct flags fl;
 std::string ptrn;
 std::string repl;
@@ -42,41 +40,31 @@ int main(int argc, char *argv[])
 
 	if ( getcwd(basePath, PATH_MAX) == 0) exit(1); // Si tu peux pas connaître ton cwd: ça va mal
 
-	langFranc = getFrancais();
+	set_mren_locale();
 	setRenommeLocale();
 
 	// Set les éléments pour parser avec argparse.hpp
-	argparseBase arg({.version = "version 2025-04-18"});
+	argparseBase arg({.version = "version 2025-06-05"});
 
-	if (langFranc) {
-		arg.description = fr_message_description;
-		arg.usage = fr_message_usage;
-		arg.helpMsg = fr_message_aide;
-	}
-	else {
-		arg.description = en_message_description;
-		arg.usage = en_message_usage;
-		arg.helpMsg = en_message_aide;
-	}
+	arg.description = mren_locale("message_description");
+	arg.usage = mren_locale("message_usage");
+	arg.helpMsg = mren_locale("message_usage")+"\n""\n"+
+					mren_locale("message_description")+".\n""\n"+
+					mren_locale("message_aide");
 	arg.mren_flags = &fl;
 	int ret = parse(arg, argc, argv);
 	if (ret == retcode::ERROR) return 1;
 	if (ret == retcode::HELP_VERSION) return 0;
 
 	if (arg.argPos_c < 2) {
-
-		if (langFranc) prt_message(fr_message_erreur);
-		else prt_message(en_message_erreur);
-
+		std::cout << mren_locale("message_erreur") + mren_locale("message_aide") << std::endl;
 		return 1;
 	}
 
 	// On ajuste les flags f_flag et d_flag pour être cohérent
 	if ((fl.f_flag == false) && (fl.d_flag == false)) fl.f_flag = fl.d_flag = true;
 	else if ((fl.f_flag == true) && (fl.d_flag == true)) {
-		if (langFranc) prt_message(fr_message_exclude);
-		else prt_message(en_message_exclude);
-
+		std::cout << mren_locale("message_exclude") << std::endl;
 		return 1;
 	}
 
@@ -103,14 +91,8 @@ int main(int argc, char *argv[])
 		struct stat sb; // Teste pour un répertoire valide
 		if (!(stat(arg.argPos_v[i].c_str(), &sb) == 0 && (sb.st_mode & S_IFDIR))) {
 			std::cout << "✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦" << std::endl;
-			if (langFranc) {
-				std::cout << coul.FGROUGE << arg.argPos_v[i] << coul.RESET 
-						<< " n'est pas un répertoire valide." << std::endl;
-			}
-			else {
-				std::cout << coul.FGROUGE << arg.argPos_v[i] << coul.RESET 
-						<< " is not a valid folder." << std::endl;
-			}
+			std::cout << coul.FGROUGE << arg.argPos_v[i] << coul.RESET 
+						<< mren_locale("err_invalid_dir") << std::endl;
 			continue;
 		}
 		// À partir d'ici nous avons un répertoire valide.
@@ -119,14 +101,9 @@ int main(int argc, char *argv[])
 		currObject = fullPath;
 
 		if (fl.v_flag) {
-			if (i > 2) std::cout << "✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦" << std::endl;
-			if (langFranc) {
-				std::cout << "À partir du répertoire: "
-						<< coul.FGBLEU << currObject << coul.RESET << "\n"
-						<< "- - - - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
-			}
-			else {
-				std::cout << "From folder: "
+			if (i > 2) {
+				std::cout << "✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦" << std::endl;
+				std::cout << mren_locale("verbose_iteration")
 						<< coul.FGBLEU << currObject << coul.RESET << "\n"
 						<< "- - - - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
 			}
@@ -167,20 +144,13 @@ int main(int argc, char *argv[])
 		}
 		if ( ! chdir(currObject.c_str()) ) {
 			if (! trouveMatch()) {
-				if (langFranc) std::cout << "Pas de correspondance pour ce répertoire ..." << std::endl;
-				else std::cout << "There is no match for this directory ..." << std::endl;
+				std::cout << mren_locale("pas_correspondande") << std::endl;
 			}
 			chdir(basePath); // À cause de la boucle, toujours revenir au dossier de base
 		}
 		else {
-			if (langFranc) {
-				std::cout << "Impossible de travailler avec le répertoire "
+			std::cout << mren_locale("err_directory")
 					  << coul.FGROUGE << arg.argPos_v[i] << coul.RESET << std::endl;
-			}
-			else {
-				std::cout << "Unable to work with directory "
-					  << coul.FGROUGE << arg.argPos_v[i] << coul.RESET << std::endl;
-			}
 			continue;
 		}
 	}

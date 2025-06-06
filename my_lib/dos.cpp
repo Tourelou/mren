@@ -1,11 +1,13 @@
 #include <iostream>
+#include <cstdio>
 #include <unistd.h> // chdir(), getcwd(), rename()
 
 #ifdef __linux__
-		#include <linux/limits.h>
+#include <linux/limits.h>
 #endif
 
 #include "global.h"
+#include "mren_locale.hpp"
 
 std::string get_working_path()
 {
@@ -37,30 +39,12 @@ std::string get_working_path()
 }
 
 
-const std::string fr_devient = " " + coul.FGVERT +
-									" ==> Deviendrait ==> " +
-										coul.RESET + " ";
-const std::string en_devient = " " + coul.FGVERT +
-									" ==> would become ==> " +
-										coul.RESET + " ";
 std::string devient;
-const std::string fr_devenu = " " + coul.FGROUGE +
-									" ==> est devenu ==> " +
-										coul.RESET + " ";
-const std::string en_devenu = " " + coul.FGROUGE +
-									" ==> became ==> " +
-										coul.RESET + " ";
 std::string devenu;
 
 void setRenommeLocale() {
-	if (langFranc) {
-		devient = fr_devient;
-		devenu = fr_devenu;
-	}
-	else {
-		devient = en_devient;
-		devenu = en_devenu;
-	}
+	devient = mren_locale("deviendrait");
+	devenu = mren_locale("est_devenu");
 }
 
 bool renomme(std::string nom, std::string nouveauNom, std::string indent)
@@ -70,14 +54,7 @@ bool renomme(std::string nom, std::string nouveauNom, std::string indent)
 	}
 	else {
 		if (std::rename(nom.c_str(), nouveauNom.c_str())) {
-			if (langFranc) {
-				std::cout << coul.FGROUGE << " Je ne peux renommer "
-					<< coul.RESET << " " << nom << " en " << nouveauNom << std::endl;
-			}
-			else {
-				std::cout << coul.FGROUGE << " Can't rename "
-					<< coul.RESET << " " << nom << " to " << nouveauNom << std::endl;
-			}
+			printf(mren_locale("renom_impossible").c_str(), nom.c_str(), nouveauNom.c_str());
 			return(false);
 		}
 		if (fl.v_flag) { std::cout << indent << nom << devenu << nouveauNom << '\n';

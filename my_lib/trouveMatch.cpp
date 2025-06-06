@@ -1,11 +1,13 @@
 #include <string>
 #include <sstream>	// Pour stringStream : fonction récursive : Capturer cout
 #include <iostream>
+#include <cstdio>
 #include <vector>
 #include <regex>	// ...
 #include <unistd.h> // chdir(), getcwd()
 #include <dirent.h>	// Pour récupérer le contenu d'un répertoire
 #include "global.h"
+#include "mren_locale.hpp"
 #include "dos.hpp"
 
 bool trouveMatch()
@@ -127,12 +129,7 @@ bool trouveMatch()
 					chdir(prevPath.c_str());
 				}
 				else {
-					if (langFranc) std::cout << coul.FGROUGE <<"---" << coul.RESET << " Je ne peux "
-									<< coul.FGROUGE << "«chdir()»" << coul.RESET << " vers le répertoire "
-									<< coul.FGROUGE << d << " ---" << coul.RESET << std::endl;
-					else std::cout << coul.FGROUGE <<"---" << coul.RESET << " Can't "
-									<< coul.FGROUGE << "«chdir()»" << coul.RESET << " to folder "
-									<< coul.FGROUGE << d << " ---" << coul.RESET << std::endl;
+					printf(mren_locale("err_chdir").c_str(), d.c_str());
 				}
 				match = match|recursive_match;
 				iteration--;
@@ -140,8 +137,7 @@ bool trouveMatch()
 		}
 	}
 	else {
-		if (langFranc) std::cout << "Ne peut lire le répertoire " << get_working_path() << std::endl;
-		else std::cout << "Can't read directory " << get_working_path() << std::endl;
+		std::cout << mren_locale("lire_rep_impossible") << get_working_path() << std::endl;
 		return false;
 	}
 	return match|recursive_match;
