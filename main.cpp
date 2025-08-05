@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	setRenommeLocale();
 
 	// Set les éléments pour parser avec argparse.hpp
-	argparseBase arg({.version = "version 2025-06-05"});
+	argparseBase arg({.version = "version 2025-08-05"});
 
 	arg.description = mren_locale("message_description");
 	arg.usage = mren_locale("message_usage");
@@ -103,10 +103,10 @@ int main(int argc, char *argv[])
 		if (fl.v_flag) {
 			if (i > 2) {
 				std::cout << "✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦ ✦" << std::endl;
-				std::cout << mren_locale("verbose_iteration")
-						<< coul.FGBLEU << currObject << coul.RESET << "\n"
-						<< "- - - - - - - - - - - - - - - - - - - - - - - - - - - -" << std::endl;
 			}
+			std::cout << mren_locale("verbose_iteration")
+			<< coul.FGBLEU << currObject << coul.RESET << "\n"
+			<< "- - - - - -" << std::endl;
 		}
 		if (fl.i_flag && fl.d_flag) { // Si on a le flag -i, inclure le rep source.
 			std::string baseName = currObject.substr(currObject.find_last_of("/\\") + 1);

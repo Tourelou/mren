@@ -20,13 +20,11 @@ bool trouveMatch()
 	DIR *dh;
 	struct dirent* contents;
 	std::string prevPath = get_working_path();
-	std::string space = "▶︎ "; // Pour créer une indentation en récursif
-	std::string rspace = "◀︎ "; // Pour créer une indentation en récursif
+	std::string space = ""; // Pour créer une indentation en récursif
 
 	// Pour créer l'indentation necessaire
 	for (int i = 0; i < iteration; i++) {
 		space.insert(0, "  ");
-		rspace.insert(0, "  ");
 	}
 	if ( (dh = opendir (".")) != NULL) {
 		std::string name;
@@ -110,14 +108,14 @@ bool trouveMatch()
 				if (chdir(d.c_str()) == 0) {
 					if (fl.v_flag) {
 						std::stringstream ss;
-						ss << space << coul.FGBLEU << d << coul.RESET << " ▶︎" << std::endl;
+						ss << space << "└" << coul.FGBLEU << d << coul.RESET << " ┐" << std::endl;
 
 						auto orig = std::cout.rdbuf(ss.rdbuf());	//Capture le stream de cout
 						// Si il n'y a pas de match, je ne veux pas l'afficher
 						if (trouveMatch()) recursive_match = true;
 						else recursive_match = recursive_match|false;	// Pour passer le match au parent
 
-						ss << rspace << coul.FGBLEU << d << coul.RESET << " ◀︎" << std::endl;
+						ss << space << "┌" << coul.FGBLEU << d << coul.RESET << " ┘" << std::endl;
 
 						std::cout.rdbuf(orig);						// Reset le buffer à cout
 						if (recursive_match) std::cout << ss.str() << std::flush;

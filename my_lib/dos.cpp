@@ -49,7 +49,7 @@ void setRenommeLocale() {
 
 bool renomme(std::string nom, std::string nouveauNom, std::string indent)
 {
-	if(fl.n_flag) { std::cout << indent << nom << devient << nouveauNom << '\n';
+	if(fl.n_flag) { std::cout << indent << "▶︎ " << nom << devient << nouveauNom << '\n';
 		return(false);
 	}
 	else {
@@ -57,7 +57,7 @@ bool renomme(std::string nom, std::string nouveauNom, std::string indent)
 			printf(mren_locale("renom_impossible").c_str(), nom.c_str(), nouveauNom.c_str());
 			return(false);
 		}
-		if (fl.v_flag) { std::cout << indent << nom << devenu << nouveauNom << '\n';
+		if (fl.v_flag) { std::cout << indent << "▶︎ " << nom << devenu << nouveauNom << '\n';
 		}
 		return(true);
 	}

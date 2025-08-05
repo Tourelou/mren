@@ -32,9 +32,9 @@
 			{"es", " no es un directorio válido."}}
 		},
 		{"verbose_iteration", {
-			{"en", "From folder: "},
-			{"fr", "À partir du répertoire: "},
-			{"es", "Del directorio: "}}
+			{"en", "Processing directory: "},
+			{"fr", "Traitement du répertoire: "},
+			{"es", "Procesando el directorio: "}}
 		},
 		{"pas_correspondande", {
 			{"en", "There is no match for this directory ..."},
