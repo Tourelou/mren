@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 	setRenommeLocale();
 
 	// Set les éléments pour parser avec argparse.hpp
-	argparseBase arg({.version = "version 2025-08-05"});
+	argparseBase arg({.version = "version 2026-05-11"});
 
 	arg.description = mren_locale("message_description");
 	arg.usage = mren_locale("message_usage");
@@ -127,20 +127,29 @@ int main(int argc, char *argv[])
 					}
 				}
 			};
-
 //	BLOC QUI S'EXÉCUTE QUAND IL N'Y A PAS DE CARACTÈRES SPÉCIAUX
-			std::regex self_replace(ptrn, regexOptionI);
-			find_rename(self_replace);
-//	FIN DU BLOC
+			try {
+				// Tentative de création de la regex
+				std::regex self_replace(ptrn, regexOptionI);
+				find_rename(self_replace);
+
 #ifdef __APPLE__
 //	BLOC QUI S'EXÉCUTE QUAND IL Y A DES CARACTÈRES SPÉCIAUX
-			if (ptrn != ptrn_NFD) {
-				std::regex self_replace(ptrn_NFD, regexOptionI);
-				find_rename(self_replace);
-			}
+				if (ptrn != ptrn_NFD) {
+					std::regex self_replace(ptrn_NFD, regexOptionI);
+					find_rename(self_replace);
+				}
 //	FIN DU BLOC
 #endif
-
+			} 
+			catch (const std::regex_error& e) {
+				// Si la regex est invalide, on affiche un message propre au lieu de crasher
+				std::cerr << "** Err. regex " << "'" << ptrn << "' : -- " << e.what() << std::endl;
+				
+				// On revient au point de départ et on quitte proprement ou on continue la boucle
+				chdir(basePath); 
+				return 1; 
+			}
 		}
 		if ( ! chdir(currObject.c_str()) ) {
 			if (! trouveMatch()) {

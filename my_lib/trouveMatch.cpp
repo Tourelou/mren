@@ -85,19 +85,27 @@ bool trouveMatch()
 		};
 
 //	BLOC QUI S'EXÉCUTE QUAND IL N'Y A PAS DE CARACTÈRES SPÉCIAUX
-		std::regex self_replace(ptrn, regexOptionI);
-		find_rename(self_replace);
+		try {
+			// Tentative de création de la regex
+			std::regex self_replace(ptrn, regexOptionI);
+			find_rename(self_replace);
 
-//	FIN DU BLOC
 #ifdef __APPLE__
 //	BLOC QUI S'EXÉCUTE QUAND IL Y A DES CARACTÈRES SPÉCIAUX
-		if( ptrn != ptrn_NFD) // Si il ne sont pas pareil refaisont le tour.
-		{
-			std::regex self_replace(ptrn_NFD, regexOptionI);
-			find_rename(self_replace);
-		}
+			if (ptrn != ptrn_NFD) {
+				std::regex self_replace(ptrn_NFD, regexOptionI);
+				find_rename(self_replace);
+			}
 //	FIN DU BLOC
 #endif
+		} 
+		catch (const std::regex_error& e) {
+			// Si la regex est invalide, on affiche un message propre au lieu de crasher
+			std::cerr << "** Err. regex " << "'" << ptrn << "' : -- " << e.what() << std::endl;
+			
+			// On revient au point de départ et on quitte proprement ou on continue la boucle
+			return false; 
+		}
 		// Quand on veut y aller récursivement.
 		if (fl.r_flag == true) {
 			if (! match && dname.empty()) return false;
